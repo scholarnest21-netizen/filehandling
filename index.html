@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Notes – Files, Modules & Packages | ScholarNest</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0C0F1A;
+    --surface:  #131827;
+    --card:     #1A2035;
+    --border:   #252D45;
+    --accent1:  #6C63FF;
+    --accent2:  #00D4AA;
+    --accent3:  #FF6B6B;
+    --accent4:  #FFB347;
+    --text:     #E8EAF0;
+    --muted:    #7B85A0;
+    --code-bg:  #0A0D16;
+    --code-num: #3A4060;
+    --keyword:  #C792EA;
+    --string:   #C3E88D;
+    --comment:  #546E7A;
+    --func:     #82AAFF;
+    --number:   #F78C6C;
+    --builtin:  #FFCB6B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(12,15,26,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 62px;
+  }
+
+  .logo-wrap { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .logo-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Sora', sans-serif; font-weight: 800; font-size: 16px; color: #fff;
+  }
+  .logo-text { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--text); }
+  .logo-text span { color: var(--accent2); }
+
+  .nav-site { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
+  .nav-site a { color: var(--accent2); text-decoration: none; }
+  .nav-site a:hover { text-decoration: underline; }
+
+  .nav-links { display: flex; gap: 6px; }
+  .nav-links a {
+    font-size: 12px; color: var(--muted); text-decoration: none;
+    padding: 4px 10px; border-radius: 6px; transition: all .2s;
+    white-space: nowrap;
+  }
+  .nav-links a:hover { background: var(--card); color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 80px 2rem 60px;
+    text-align: center;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,99,255,.12) 0%, transparent 70%);
+    position: relative;
+  }
+  .hero-badge {
+    display: inline-block; margin-bottom: 18px;
+    background: rgba(108,99,255,.15); border: 1px solid rgba(108,99,255,.35);
+    color: #A89FFF; font-size: 11px; font-weight: 600; letter-spacing: .1em;
+    padding: 5px 14px; border-radius: 20px; text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Sora', sans-serif; font-weight: 800;
+    font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--accent1); }
+  .hero p { color: var(--muted); font-size: 1rem; max-width: 560px; margin: 0 auto 32px; }
+
+  .toc-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .toc-pill {
+    padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    text-decoration: none; border: 1px solid var(--border); color: var(--muted);
+    transition: all .2s; letter-spacing: .02em;
+  }
+  .toc-pill:hover, .toc-pill.active {
+    background: var(--accent1); border-color: var(--accent1); color: #fff;
+  }
+
+  /* ── LAYOUT ── */
+  .page-wrap { max-width: 1100px; margin: 0 auto; padding: 0 2rem 80px; }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex; align-items: flex-start; gap: 16px;
+    padding: 48px 0 24px;
+  }
+  .sec-num {
+    flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 14px;
+  }
+  .n1 { background: rgba(108,99,255,.2); color: var(--accent1); }
+  .n2 { background: rgba(0,212,170,.2); color: var(--accent2); }
+  .n3 { background: rgba(255,107,107,.2); color: var(--accent3); }
+  .n4 { background: rgba(255,179,71,.2); color: var(--accent4); }
+  .n5 { background: rgba(130,170,255,.2); color: var(--func); }
+  .n6 { background: rgba(199,146,234,.2); color: var(--keyword); }
+  .n7 { background: rgba(195,232,141,.2); color: var(--string); }
+  .n8 { background: rgba(255,203,107,.2); color: var(--builtin); }
+
+  .sec-info h2 {
+    font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.6rem; line-height: 1.2;
+  }
+  .sec-info p { color: var(--muted); margin-top: 4px; font-size: .9rem; }
+
+  /* ── THEORY CARD ── */
+  .theory-block {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px 28px; margin-bottom: 20px;
+  }
+  .theory-block h3 {
+    font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 700;
+    color: var(--accent2); margin-bottom: 10px;
+  }
+  .theory-block p { color: var(--text); margin-bottom: 10px; }
+  .theory-block p:last-child { margin-bottom: 0; }
+  .theory-block ul { padding-left: 20px; color: var(--text); }
+  .theory-block ul li { margin-bottom: 6px; }
+  .theory-block strong { color: var(--accent4); }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    padding: 10px 14px; font-size: 13px;
+    border: 1px solid var(--border); text-align: left;
+  }
+  th {
+    background: var(--surface); color: var(--accent2); font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  td { background: var(--card); color: var(--text); }
+  td code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-size: 12px; color: var(--accent1); }
+
+  /* ── CODE BLOCK ── */
+  .code-card {
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 12px;
+    margin-bottom: 20px; overflow: hidden;
+  }
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .code-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: .06em; text-transform: uppercase;
+  }
+  .code-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+    background: rgba(108,99,255,.2); color: var(--accent1);
+  }
+  .code-body { padding: 20px; overflow-x: auto; }
+  pre { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.7; }
+
+  /* Syntax colours */
+  .kw  { color: var(--keyword); }
+  .st  { color: var(--string); }
+  .cm  { color: var(--comment); font-style: italic; }
+  .fn  { color: var(--func); }
+  .nm  { color: var(--number); }
+  .bl  { color: var(--builtin); }
+  .op  { color: #89DDFF; }
+
+  /* Output */
+  .output-block {
+    background: #06090F; border: 1px solid #1C2235; border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 20px;
+  }
+  .output-block .out-label {
+    font-size: 10px; color: var(--muted); font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .output-block pre { color: var(--accent2); font-family: 'JetBrains Mono', monospace; font-size: 13px; }
+
+  /* ── GRID ── */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  @media(max-width:680px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ── NOTE / WARN ── */
+  .note, .warn, .tip {
+    border-left: 3px solid; border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin-bottom: 16px; font-size: .88rem;
+  }
+  .note { border-color: var(--accent1); background: rgba(108,99,255,.08); color: #A89FFF; }
+  .warn { border-color: var(--accent3); background: rgba(255,107,107,.08); color: #FF9999; }
+  .tip  { border-color: var(--accent2); background: rgba(0,212,170,.08); color: #7FECDA; }
+
+  /* ── DIVIDER ── */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 40px 2rem 32px;
+    border-top: 1px solid var(--border); color: var(--muted); font-size: .82rem;
+  }
+  footer a { color: var(--accent2); text-decoration: none; }
+
+  /* ── EXCEPTION TABLE ── */
+  .exc-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px; margin-bottom: 20px;
+  }
+  .exc-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .exc-card .exc-name { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent3); font-weight: 600; margin-bottom: 4px; }
+  .exc-card .exc-desc { font-size: 12px; color: var(--muted); }
+
+  /* Section anchor offset */
+  [id] { scroll-margin-top: 72px; }
+
+  @media(max-width:600px) {
+    nav .nav-links { display: none; }
+    .hero { padding: 50px 1.2rem 40px; }
+    .page-wrap { padding: 0 1.2rem 60px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!--    NAV                             -->
+<!-- ╚══════════════════════════════════╝ -->
+<nav>
+  <a href="https://scholarnest21.netlify.app" class="logo-wrap">
+    <div class="logo-icon">SN</div>
+    <span class="logo-text">Scholar<span>Nest</span></span>
+  </a>
+  <span class="nav-site">Visit: <a href="https://scholarnest21.netlify.app" target="_blank">scholarnest21.netlify.app</a></span>
+  <div class="nav-links">
+    <a href="#files">Files</a>
+    <a href="#exceptions">Exceptions</a>
+    <a href="#format">Format</a>
+    <a href="#cmdargs">CLI Args</a>
+    <a href="#handling">Handling</a>
+    <a href="#modules">Modules</a>
+    <a href="#packages">Packages</a>
+  </div>
+</nav>
+
+<!-- ╔══════════════════════════════════╗ -->
+<!--    HERO                            -->
+<!-- ╚══════════════════════════════════╝ -->
+<header class="hero">
+  <div class="hero-badge">Python Study Notes</div>
+  <h1>Files, Modules <span>&amp; Packages</span></h1>
+  <p>Complete theory with rich examples covering file I/O, exception handling, command-line args, modules, and packages in Python.</p>
+  <div class="toc-pills">
+    <a href="#files"      class="toc-pill">📄 File I/O</a>
+    <a href="#exceptions" class="toc-pill">⚠️ Exceptions</a>
+    <a href="#format"     class="toc-pill">🔡 Format Operator</a>
+    <a href="#cmdargs"    class="toc-pill">💻 CLI Arguments</a>
+    <a href="#handling"   class="toc-pill">🛡️ Handling Exceptions</a>
+    <a href="#modules"    class="toc-pill">📦 Modules</a>
+    <a href="#packages"   class="toc-pill">🗂️ Packages</a>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+<!-- ══════════════════════════════════════════════════
+     1. TEXT FILES – READING AND WRITING
+══════════════════════════════════════════════════ -->
+<section id="files">
+  <div class="section-header">
+    <div class="sec-num n1">01</div>
+    <div class="sec-info">
+      <h2>Text Files – Reading &amp; Writing</h2>
+      <p>Persistent data storage using Python's built-in file-handling capabilities.</p>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>What is a File?</h3>
+    <p>A <strong>file</strong> is a named location on a storage device that stores related data permanently. Unlike variables that lose their values when a program terminates, files provide <strong>persistent storage</strong>. Python treats files as sequences of bytes or characters.</p>
+    <p>There are two main categories:</p>
+    <ul>
+      <li><strong>Text Files</strong> – Store data as human-readable characters (e.g., .txt, .csv, .py). Each line ends with a newline character <code>\n</code>.</li>
+      <li><strong>Binary Files</strong> – Store data as raw bytes (e.g., .jpg, .mp3, .exe). Not human-readable.</li>
+    </ul>
+  </div>
+
+  <div class="theory-block">
+    <h3>The open() Function</h3>
+    <p>The built-in <code>open()</code> function is used to open a file and returns a <strong>file object</strong> (also called a file handle). The general syntax is:</p>
+    <p><code>file_obj = open(filename, mode, encoding=None)</code></p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Mode</th><th>Symbol</th><th>Description</th></tr>
+        <tr><td>Read</td><td><code>'r'</code></td><td>Open for reading (default). Error if file does not exist.</td></tr>
+        <tr><td>Write</td><td><code>'w'</code></td><td>Open for writing. Creates new file or <strong>truncates</strong> existing.</td></tr>
+        <tr><td>Append</td><td><code>'a'</code></td><td>Open for writing. Creates new file or appends to end.</td></tr>
+        <tr><td>Exclusive</td><td><code>'x'</code></td><td>Creates new file. Error if file already exists.</td></tr>
+        <tr><td>Read+Write</td><td><code>'r+'</code></td><td>Open for both reading and writing. Does not truncate.</td></tr>
+        <tr><td>Binary</td><td><code>'b'</code></td><td>Binary mode (combine: <code>'rb'</code>, <code>'wb'</code>).</td></tr>
+        <tr><td>Text</td><td><code>'t'</code></td><td>Text mode (default).</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>File Object Methods</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Method</th><th>Description</th></tr>
+        <tr><td><code>read(n)</code></td><td>Read at most n characters. If n omitted, read entire file.</td></tr>
+        <tr><td><code>readline()</code></td><td>Read a single line (including the <code>\n</code> at end).</td></tr>
+        <tr><td><code>readlines()</code></td><td>Read all lines and return as a list of strings.</td></tr>
+        <tr><td><code>write(s)</code></td><td>Write string s to file. Returns number of characters written.</td></tr>
+        <tr><td><code>writelines(lines)</code></td><td>Write a list of strings (does NOT add newlines automatically).</td></tr>
+        <tr><td><code>seek(offset)</code></td><td>Move file cursor to given byte position.</td></tr>
+        <tr><td><code>tell()</code></td><td>Return current position of file cursor.</td></tr>
+        <tr><td><code>close()</code></td><td>Close the file and release system resources.</td></tr>
+        <tr><td><code>flush()</code></td><td>Flush internal buffer to file.</td></tr>
+        <tr><td><code>truncate(size)</code></td><td>Truncate file to at most size bytes.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- EX 1 -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 1 — Writing to a file (basic)</span>
+      <span class="code-tag">write</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># Open file in write mode ('w')</span>
+<span class="cm"># If file doesn't exist, Python creates it</span>
+<span class="cm"># If it exists, it is OVERWRITTEN (truncated)</span>
+
+f <span class="op">=</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"w"</span>)
+f.<span class="fn">write</span>(<span class="st">"Hello, World!\n"</span>)
+f.<span class="fn">write</span>(<span class="st">"Python file handling is easy.\n"</span>)
+f.<span class="fn">write</span>(<span class="st">"ScholarNest – Learn. Grow. Excel.\n"</span>)
+f.<span class="fn">close</span>()   <span class="cm"># Always close the file!</span>
+
+<span class="fn">print</span>(<span class="st">"File written successfully."</span>)
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>File written successfully.</pre></div>
+
+  <!-- EX 2 -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 2 — Reading entire file with read()</span>
+      <span class="code-tag">read</span>
+    </div>
+    <div class="code-body"><pre>
+f <span class="op">=</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>)
+content <span class="op">=</span> f.<span class="fn">read</span>()    <span class="cm"># read all characters</span>
+<span class="fn">print</span>(content)
+f.<span class="fn">close</span>()
+
+<span class="cm"># Read only first 5 characters</span>
+f <span class="op">=</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>)
+<span class="fn">print</span>(f.<span class="fn">read</span>(<span class="nm">5</span>))   <span class="cm"># → 'Hello'</span>
+f.<span class="fn">close</span>()
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Hello, World!
+Python file handling is easy.
+ScholarNest – Learn. Grow. Excel.
+
+Hello</pre></div>
+
+  <!-- EX 3 -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 3 — readline() and readlines()</span>
+      <span class="code-tag">read</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># --- readline(): reads one line at a time ---</span>
+f <span class="op">=</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>)
+<span class="fn">print</span>(f.<span class="fn">readline</span>())   <span class="cm"># 'Hello, World!\n'</span>
+<span class="fn">print</span>(f.<span class="fn">readline</span>())   <span class="cm"># 'Python file handling is easy.\n'</span>
+f.<span class="fn">close</span>()
+
+<span class="cm"># --- readlines(): returns list of all lines ---</span>
+f <span class="op">=</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>)
+lines <span class="op">=</span> f.<span class="fn">readlines</span>()
+<span class="fn">print</span>(lines)
+f.<span class="fn">close</span>()
+
+<span class="cm"># --- Looping through file (most Pythonic) ---</span>
+f <span class="op">=</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>)
+<span class="kw">for</span> line <span class="kw">in</span> f:
+    <span class="fn">print</span>(line.<span class="fn">strip</span>())   <span class="cm"># strip() removes trailing \n</span>
+f.<span class="fn">close</span>()
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Hello, World!
+
+Python file handling is easy.
+
+['Hello, World!\n', 'Python file handling is easy.\n', 'ScholarNest – Learn. Grow. Excel.\n']
+
+Hello, World!
+Python file handling is easy.
+ScholarNest – Learn. Grow. Excel.</pre></div>
+
+  <!-- EX 4 – with statement -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 4 — The with statement (context manager) ⭐ RECOMMENDED</span>
+      <span class="code-tag">best practice</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># 'with' ensures file is automatically closed even if an error occurs</span>
+<span class="cm"># No need to call f.close() manually</span>
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    content <span class="op">=</span> f.<span class="fn">read</span>()
+    <span class="fn">print</span>(content)
+<span class="cm"># file is automatically closed here</span>
+
+<span class="cm"># Writing with context manager</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"output.txt"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="st">"Written safely using 'with'\n"</span>)
+</pre></div></div>
+
+  <!-- EX 5 – append -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 5 — Append mode</span>
+      <span class="code-tag">append</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># 'a' mode adds content at the END without deleting existing data</span>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"a"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">write</span>(<span class="st">"Appended line 1\n"</span>)
+    f.<span class="fn">write</span>(<span class="st">"Appended line 2\n"</span>)
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    <span class="fn">print</span>(f.<span class="fn">read</span>())
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Hello, World!
+Python file handling is easy.
+ScholarNest – Learn. Grow. Excel.
+Appended line 1
+Appended line 2</pre></div>
+
+  <!-- EX 6 – seek / tell -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 6 — seek() and tell() — File cursor position</span>
+      <span class="code-tag">cursor</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"notes.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    <span class="fn">print</span>(<span class="st">"Position:"</span>, f.<span class="fn">tell</span>())   <span class="cm"># → 0 (beginning)</span>
+    f.<span class="fn">read</span>(<span class="nm">5</span>)
+    <span class="fn">print</span>(<span class="st">"After reading 5 chars:"</span>, f.<span class="fn">tell</span>())   <span class="cm"># → 5</span>
+    f.<span class="fn">seek</span>(<span class="nm">0</span>)   <span class="cm"># go back to beginning</span>
+    <span class="fn">print</span>(<span class="st">"After seek(0):"</span>, f.<span class="fn">tell</span>())   <span class="cm"># → 0</span>
+    <span class="fn">print</span>(f.<span class="fn">read</span>(<span class="nm">5</span>))   <span class="cm"># → Hello</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Position: 0
+After reading 5 chars: 5
+After seek(0): 0
+Hello</pre></div>
+
+  <!-- EX 7 – writelines -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 7 — writelines() with a list</span>
+      <span class="code-tag">write</span>
+    </div>
+    <div class="code-body"><pre>
+students <span class="op">=</span> [<span class="st">"Alice\n"</span>, <span class="st">"Bob\n"</span>, <span class="st">"Charlie\n"</span>, <span class="st">"Diana\n"</span>]
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"students.txt"</span>, <span class="st">"w"</span>) <span class="kw">as</span> f:
+    f.<span class="fn">writelines</span>(students)   <span class="cm"># note: NO newlines added automatically</span>
+
+<span class="kw">with</span> <span class="fn">open</span>(<span class="st">"students.txt"</span>, <span class="st">"r"</span>) <span class="kw">as</span> f:
+    <span class="kw">for</span> i, line <span class="kw">in</span> <span class="fn">enumerate</span>(f, <span class="nm">1</span>):
+        <span class="fn">print</span>(<span class="st">f"Student <span class="op">{</span>i<span class="op">}</span>: <span class="op">{</span>line.<span class="fn">strip</span>()<span class="op">}</span>"</span>)
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Student 1: Alice
+Student 2: Bob
+Student 3: Charlie
+Student 4: Diana</pre></div>
+
+  <div class="tip">💡 <strong>Tip:</strong> Always use the <code>with</code> statement when working with files. It automatically closes the file even if an exception is raised, preventing resource leaks.</div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════
+     2. ERRORS AND EXCEPTIONS
+══════════════════════════════════════════════════ -->
+<section id="exceptions">
+  <div class="section-header">
+    <div class="sec-num n2">02</div>
+    <div class="sec-info">
+      <h2>Errors and Exceptions</h2>
+      <p>Understanding what goes wrong — and why — in Python programs.</p>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>Types of Errors in Python</h3>
+    <p>Python has three fundamental error categories:</p>
+    <ul>
+      <li><strong>Syntax Errors</strong> – Detected by the Python parser before program execution begins. The code is structurally incorrect (e.g., missing colon, unmatched parenthesis).</li>
+      <li><strong>Runtime Errors (Exceptions)</strong> – Occur during program execution when something unexpected happens (e.g., dividing by zero, accessing a missing file).</li>
+      <li><strong>Logical Errors</strong> – The program runs without crashing but produces incorrect output due to a flaw in the algorithm.</li>
+    </ul>
+  </div>
+
+  <div class="theory-block">
+    <h3>What is an Exception?</h3>
+    <p>An <strong>exception</strong> is an event that occurs during program execution that disrupts the normal flow. When Python encounters an error, it creates an <strong>exception object</strong> containing information about the error — its type, message, and traceback. If this object is not handled, the program <strong>terminates abruptly</strong> with a traceback.</p>
+    <p>Python uses a hierarchical exception class system. All exceptions derive from the base class <strong>BaseException</strong>, and most user-level exceptions inherit from <strong>Exception</strong>.</p>
+  </div>
+
+  <div class="exc-grid">
+    <div class="exc-card"><div class="exc-name">SyntaxError</div><div class="exc-desc">Invalid Python syntax</div></div>
+    <div class="exc-card"><div class="exc-name">NameError</div><div class="exc-desc">Variable not defined</div></div>
+    <div class="exc-card"><div class="exc-name">TypeError</div><div class="exc-desc">Wrong type for operation</div></div>
+    <div class="exc-card"><div class="exc-name">ValueError</div><div class="exc-desc">Right type, wrong value</div></div>
+    <div class="exc-card"><div class="exc-name">ZeroDivisionError</div><div class="exc-desc">Division by zero</div></div>
+    <div class="exc-card"><div class="exc-name">IndexError</div><div class="exc-desc">Index out of range</div></div>
+    <div class="exc-card"><div class="exc-name">KeyError</div><div class="exc-desc">Dictionary key missing</div></div>
+    <div class="exc-card"><div class="exc-name">FileNotFoundError</div><div class="exc-desc">File does not exist</div></div>
+    <div class="exc-card"><div class="exc-name">AttributeError</div><div class="exc-desc">Object has no attribute</div></div>
+    <div class="exc-card"><div class="exc-name">ImportError</div><div class="exc-desc">Module not found</div></div>
+    <div class="exc-card"><div class="exc-name">OverflowError</div><div class="exc-desc">Result too large for float</div></div>
+    <div class="exc-card"><div class="exc-name">MemoryError</div><div class="exc-desc">Out of memory</div></div>
+    <div class="exc-card"><div class="exc-name">RecursionError</div><div class="exc-desc">Max recursion depth exceeded</div></div>
+    <div class="exc-card"><div class="exc-name">StopIteration</div><div class="exc-desc">Iterator exhausted</div></div>
+    <div class="exc-card"><div class="exc-name">PermissionError</div><div class="exc-desc">OS permission denied</div></div>
+    <div class="exc-card"><div class="exc-name">RuntimeError</div><div class="exc-desc">Generic runtime error</div></div>
+  </div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example — Common exceptions in action</span>
+      <span class="code-tag">exceptions</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># ZeroDivisionError</span>
+<span class="fn">print</span>(<span class="nm">10</span> <span class="op">/</span> <span class="nm">0</span>)    <span class="cm"># → ZeroDivisionError: division by zero</span>
+
+<span class="cm"># NameError</span>
+<span class="fn">print</span>(x)        <span class="cm"># → NameError: name 'x' is not defined</span>
+
+<span class="cm"># TypeError</span>
+<span class="fn">print</span>(<span class="st">"age: "</span> <span class="op">+</span> <span class="nm">25</span>)  <span class="cm"># → TypeError: can only concatenate str (not "int") to str</span>
+
+<span class="cm"># ValueError</span>
+<span class="fn">int</span>(<span class="st">"abc"</span>)     <span class="cm"># → ValueError: invalid literal for int() with base 10: 'abc'</span>
+
+<span class="cm"># IndexError</span>
+lst <span class="op">=</span> [<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>]
+<span class="fn">print</span>(lst[<span class="nm">10</span>])  <span class="cm"># → IndexError: list index out of range</span>
+
+<span class="cm"># KeyError</span>
+d <span class="op">=</span> {<span class="st">"a"</span>: <span class="nm">1</span>}
+<span class="fn">print</span>(d[<span class="st">"b"</span>])  <span class="cm"># → KeyError: 'b'</span>
+
+<span class="cm"># FileNotFoundError</span>
+<span class="fn">open</span>(<span class="st">"ghost.txt"</span>)   <span class="cm"># → FileNotFoundError: No such file or directory</span>
+
+<span class="cm"># AttributeError</span>
+<span class="fn">abs</span>.<span class="fn">unknown</span>()   <span class="cm"># → AttributeError: 'builtin_function_or_method' has no attribute 'unknown'</span>
+</pre></div></div>
+
+  <div class="warn">⚠️ <strong>Unhandled exceptions</strong> crash your program! Always handle exceptions that are predictable in your program flow.</div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════
+     3. HANDLING EXCEPTIONS
+══════════════════════════════════════════════════ -->
+<section id="handling">
+  <div class="section-header">
+    <div class="sec-num n3">03</div>
+    <div class="sec-info">
+      <h2>Handling Exceptions</h2>
+      <p>Using try, except, else, finally, and raise to manage errors gracefully.</p>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>The try…except Block</h3>
+    <p>The <code>try</code> statement lets you test a block of code for errors. The <code>except</code> block lets you handle the error:</p>
+    <ul>
+      <li>Python attempts to execute the <code>try</code> block.</li>
+      <li>If an exception occurs, execution jumps to the matching <code>except</code> block.</li>
+      <li>If no exception occurs, the <code>except</code> block is skipped.</li>
+      <li>Multiple <code>except</code> clauses can handle different exception types.</li>
+    </ul>
+  </div>
+
+  <div class="theory-block">
+    <h3>Full Syntax</h3>
+    <pre style="background:var(--code-bg);padding:14px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#cdd3e0">try:
+    # risky code
+except ExceptionType1:
+    # handler for type 1
+except ExceptionType2 as e:
+    # handler for type 2 (e holds the exception object)
+except (Type3, Type4):
+    # handler for multiple types
+except Exception as e:
+    # catch-all for any exception
+else:
+    # runs ONLY if no exception occurred
+finally:
+    # ALWAYS runs, regardless of exception or not</pre>
+  </div>
+
+  <!-- EX – basic -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 1 — Basic try…except</span>
+      <span class="code-tag">handling</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">try</span>:
+    num <span class="op">=</span> <span class="fn">int</span>(<span class="fn">input</span>(<span class="st">"Enter a number: "</span>))
+    result <span class="op">=</span> <span class="nm">100</span> <span class="op">/</span> num
+    <span class="fn">print</span>(<span class="st">f"Result: <span class="op">{</span>result<span class="op">}</span>"</span>)
+<span class="kw">except</span> <span class="bl">ValueError</span>:
+    <span class="fn">print</span>(<span class="st">"Error: Please enter a valid integer!"</span>)
+<span class="kw">except</span> <span class="bl">ZeroDivisionError</span>:
+    <span class="fn">print</span>(<span class="st">"Error: Cannot divide by zero!"</span>)
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output (if user enters 0)</div><pre>Error: Cannot divide by zero!</pre></div>
+
+  <!-- EX – else finally -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 2 — else and finally clauses</span>
+      <span class="code-tag">else / finally</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">try</span>:
+    f <span class="op">=</span> <span class="fn">open</span>(<span class="st">"data.txt"</span>, <span class="st">"r"</span>)
+    content <span class="op">=</span> f.<span class="fn">read</span>()
+<span class="kw">except</span> <span class="bl">FileNotFoundError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"File error: <span class="op">{</span>e<span class="op">}</span>"</span>)
+<span class="kw">else</span>:
+    <span class="cm"># only runs if no exception occurred</span>
+    <span class="fn">print</span>(<span class="st">"File read successfully!"</span>)
+    <span class="fn">print</span>(content)
+<span class="kw">finally</span>:
+    <span class="cm"># ALWAYS runs — perfect for cleanup</span>
+    <span class="fn">print</span>(<span class="st">"This always executes."</span>)
+    <span class="kw">try</span>:
+        f.<span class="fn">close</span>()
+    <span class="kw">except</span>:
+        <span class="kw">pass</span>
+</pre></div></div>
+
+  <!-- EX – multiple except -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 3 — Multiple exception handlers</span>
+      <span class="code-tag">multiple</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">def</span> <span class="fn">safe_divide</span>(a, b):
+    <span class="kw">try</span>:
+        a <span class="op">=</span> <span class="fn">int</span>(a)
+        b <span class="op">=</span> <span class="fn">int</span>(b)
+        result <span class="op">=</span> a <span class="op">/</span> b
+    <span class="kw">except</span> (<span class="bl">ValueError</span>, <span class="bl">TypeError</span>) <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="st">f"Type/Value error: <span class="op">{</span>e<span class="op">}</span>"</span>)
+        result <span class="op">=</span> <span class="nm">None</span>
+    <span class="kw">except</span> <span class="bl">ZeroDivisionError</span>:
+        <span class="fn">print</span>(<span class="st">"Cannot divide by zero!"</span>)
+        result <span class="op">=</span> <span class="nm">None</span>
+    <span class="kw">except</span> <span class="bl">Exception</span> <span class="kw">as</span> e:
+        <span class="fn">print</span>(<span class="st">f"Unexpected error: <span class="op">{</span>e<span class="op">}</span>"</span>)
+        result <span class="op">=</span> <span class="nm">None</span>
+    <span class="kw">return</span> result
+
+<span class="fn">print</span>(<span class="fn">safe_divide</span>(<span class="nm">10</span>, <span class="nm">2</span>))     <span class="cm"># → 5.0</span>
+<span class="fn">print</span>(<span class="fn">safe_divide</span>(<span class="nm">10</span>, <span class="nm">0</span>))     <span class="cm"># → Cannot divide by zero!, None</span>
+<span class="fn">print</span>(<span class="fn">safe_divide</span>(<span class="st">"a"</span>, <span class="nm">2</span>))    <span class="cm"># → Type/Value error: ..., None</span>
+</pre></div></div>
+
+  <!-- EX – raise -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 4 — raise — Raising exceptions manually</span>
+      <span class="code-tag">raise</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">def</span> <span class="fn">set_age</span>(age):
+    <span class="kw">if</span> <span class="kw">not</span> <span class="fn">isinstance</span>(age, <span class="fn">int</span>):
+        <span class="kw">raise</span> <span class="bl">TypeError</span>(<span class="st">"Age must be an integer"</span>)
+    <span class="kw">if</span> age <span class="op">&lt;</span> <span class="nm">0</span> <span class="kw">or</span> age <span class="op">&gt;</span> <span class="nm">150</span>:
+        <span class="kw">raise</span> <span class="bl">ValueError</span>(<span class="st">f"Age <span class="op">{</span>age<span class="op">}</span> is out of realistic range (0-150)"</span>)
+    <span class="kw">return</span> <span class="st">f"Age set to <span class="op">{</span>age<span class="op">}</span>"</span>
+
+<span class="kw">try</span>:
+    <span class="fn">print</span>(<span class="fn">set_age</span>(<span class="nm">25</span>))
+    <span class="fn">print</span>(<span class="fn">set_age</span>(<span class="op">-</span><span class="nm">5</span>))
+<span class="kw">except</span> <span class="bl">ValueError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"ValueError: <span class="op">{</span>e<span class="op">}</span>"</span>)
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Age set to 25
+ValueError: Age -5 is out of realistic range (0-150)</pre></div>
+
+  <!-- EX – custom exceptions -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 5 — Custom Exception Classes</span>
+      <span class="code-tag">custom</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># Define custom exception by subclassing Exception</span>
+<span class="kw">class</span> <span class="fn">InsufficientFundsError</span>(<span class="bl">Exception</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, amount, balance):
+        <span class="kw">self</span>.amount <span class="op">=</span> amount
+        <span class="kw">self</span>.balance <span class="op">=</span> balance
+        <span class="fn">super</span>().<span class="fn">__init__</span>(<span class="st">f"Tried to withdraw <span class="op">{</span>amount<span class="op">}</span>, but balance is only <span class="op">{</span>balance<span class="op">}</span>"</span>)
+
+<span class="kw">def</span> <span class="fn">withdraw</span>(balance, amount):
+    <span class="kw">if</span> amount <span class="op">&gt;</span> balance:
+        <span class="kw">raise</span> <span class="fn">InsufficientFundsError</span>(amount, balance)
+    <span class="kw">return</span> balance <span class="op">-</span> amount
+
+<span class="kw">try</span>:
+    bal <span class="op">=</span> <span class="fn">withdraw</span>(<span class="nm">500</span>, <span class="nm">700</span>)
+<span class="kw">except</span> <span class="fn">InsufficientFundsError</span> <span class="kw">as</span> e:
+    <span class="fn">print</span>(<span class="st">f"Error: <span class="op">{</span>e<span class="op">}</span>"</span>)
+    <span class="fn">print</span>(<span class="st">f"Short by: <span class="op">{</span>e.amount <span class="op">-</span> e.balance<span class="op">}</span>"</span>)
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Error: Tried to withdraw 700, but balance is only 500
+Short by: 200</pre></div>
+
+  <!-- EX – file exception -->
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 6 — Exception handling with file operations</span>
+      <span class="code-tag">file + exception</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">def</span> <span class="fn">read_file_safe</span>(filename):
+    <span class="kw">try</span>:
+        <span class="kw">with</span> <span class="fn">open</span>(filename, <span class="st">"r"</span>) <span class="kw">as</span> f:
+            <span class="kw">return</span> f.<span class="fn">read</span>()
+    <span class="kw">except</span> <span class="bl">FileNotFoundError</span>:
+        <span class="kw">return</span> <span class="st">f"File '<span class="op">{</span>filename<span class="op">}</span>' not found."</span>
+    <span class="kw">except</span> <span class="bl">PermissionError</span>:
+        <span class="kw">return</span> <span class="st">f"No permission to read '<span class="op">{</span>filename<span class="op">}</span>'."</span>
+    <span class="kw">except</span> <span class="bl">IsADirectoryError</span>:
+        <span class="kw">return</span> <span class="st">f"'<span class="op">{</span>filename<span class="op">}</span>' is a directory, not a file."</span>
+    <span class="kw">except</span> <span class="bl">Exception</span> <span class="kw">as</span> e:
+        <span class="kw">return</span> <span class="st">f"Unexpected error: <span class="op">{</span>e<span class="op">}</span>"</span>
+
+<span class="fn">print</span>(<span class="fn">read_file_safe</span>(<span class="st">"notes.txt"</span>))
+<span class="fn">print</span>(<span class="fn">read_file_safe</span>(<span class="st">"missing.txt"</span>))
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Hello, World!
+Python file handling is easy.
+...
+File 'missing.txt' not found.</pre></div>
+
+  <div class="note">📌 <strong>Note:</strong> Catching <code>Exception</code> as a catch-all is acceptable but be careful — it hides bugs. Always handle specific exceptions first, then use a generic catch-all at the end as a safety net.</div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════
+     4. FORMAT OPERATOR
+══════════════════════════════════════════════════ -->
+<section id="format">
+  <div class="section-header">
+    <div class="sec-num n4">04</div>
+    <div class="sec-info">
+      <h2>Format Operator</h2>
+      <p>Embedding values inside strings — Python's multiple approaches.</p>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>What is the Format Operator?</h3>
+    <p>The <strong>format operator</strong> (<code>%</code>) is Python's C-style string formatting mechanism. It allows you to embed values into strings at runtime. Python now offers multiple string formatting methods, each with advantages:</p>
+    <ul>
+      <li><strong>% operator</strong> – Old-style (C-like), still widely used.</li>
+      <li><strong>str.format()</strong> – More powerful and readable.</li>
+      <li><strong>f-strings</strong> (Python 3.6+) – Most modern, fastest, and most readable. ⭐</li>
+      <li><strong>Template strings</strong> – Simpler substitution via <code>string.Template</code>.</li>
+    </ul>
+  </div>
+
+  <div class="theory-block">
+    <h3>% Format Specifiers</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Specifier</th><th>Meaning</th><th>Example</th></tr>
+        <tr><td><code>%s</code></td><td>String (or any object coerced to str)</td><td><code>"Hello %s" % "World"</code></td></tr>
+        <tr><td><code>%d</code></td><td>Integer (decimal)</td><td><code>"Age: %d" % 25</code></td></tr>
+        <tr><td><code>%f</code></td><td>Floating point (6 decimal places default)</td><td><code>"Price: %f" % 9.99</code></td></tr>
+        <tr><td><code>%e</code></td><td>Scientific notation</td><td><code>"%e" % 12345.678</code></td></tr>
+        <tr><td><code>%g</code></td><td>Shorter of %e or %f</td><td><code>"%g" % 0.00012</code></td></tr>
+        <tr><td><code>%o</code></td><td>Octal integer</td><td><code>"%o" % 8  → '10'</code></td></tr>
+        <tr><td><code>%x</code></td><td>Hexadecimal (lowercase)</td><td><code>"%x" % 255  → 'ff'</code></td></tr>
+        <tr><td><code>%X</code></td><td>Hexadecimal (uppercase)</td><td><code>"%X" % 255  → 'FF'</code></td></tr>
+        <tr><td><code>%%</code></td><td>Literal percent sign</td><td><code>"100%%" → '100%'</code></td></tr>
+        <tr><td><code>%c</code></td><td>Single character</td><td><code>"%c" % 65  → 'A'</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 1 — % Operator (Old-style formatting)</span>
+      <span class="code-tag">% operator</span>
+    </div>
+    <div class="code-body"><pre>
+name <span class="op">=</span> <span class="st">"Alice"</span>
+age  <span class="op">=</span> <span class="nm">22</span>
+gpa  <span class="op">=</span> <span class="nm">3.857</span>
+
+<span class="cm"># Single substitution</span>
+<span class="fn">print</span>(<span class="st">"Student: %s"</span> <span class="op">%</span> name)             <span class="cm"># → Student: Alice</span>
+
+<span class="cm"># Multiple substitutions (use tuple)</span>
+<span class="fn">print</span>(<span class="st">"Name: %s, Age: %d"</span> <span class="op">%</span> (name, age))  <span class="cm"># → Name: Alice, Age: 22</span>
+
+<span class="cm"># Float precision</span>
+<span class="fn">print</span>(<span class="st">"GPA: %.2f"</span> <span class="op">%</span> gpa)                <span class="cm"># → GPA: 3.86</span>
+
+<span class="cm"># Width and alignment</span>
+<span class="fn">print</span>(<span class="st">"%10s | %5d | %8.2f"</span> <span class="op">%</span> (name, age, gpa))  <span class="cm"># right-aligned</span>
+<span class="fn">print</span>(<span class="st">"%-10s | %-5d | %-8.2f"</span> <span class="op">%</span> (name, age, gpa)) <span class="cm"># left-aligned</span>
+
+<span class="cm"># Percentage sign</span>
+<span class="fn">print</span>(<span class="st">"Discount: %.1f%%"</span> <span class="op">%</span> <span class="nm">15.5</span>)          <span class="cm"># → Discount: 15.5%</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Student: Alice
+Name: Alice, Age: 22
+GPA: 3.86
+     Alice |    22 |     3.86
+Alice      | 22    | 3.86    
+Discount: 15.5%</pre></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 2 — str.format() method</span>
+      <span class="code-tag">str.format()</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># Positional</span>
+<span class="fn">print</span>(<span class="st">"{} is {} years old"</span>.<span class="fn">format</span>(<span class="st">"Bob"</span>, <span class="nm">30</span>))
+
+<span class="cm"># Indexed</span>
+<span class="fn">print</span>(<span class="st">"{0} loves {1} and {0} uses Python"</span>.<span class="fn">format</span>(<span class="st">"Alice"</span>, <span class="st">"coding"</span>))
+
+<span class="cm"># Named arguments</span>
+<span class="fn">print</span>(<span class="st">"{name} scored {score:.1f}%"</span>.<span class="fn">format</span>(name<span class="op">=</span><span class="st">"Carol"</span>, score<span class="op">=</span><span class="nm">94.567</span>))
+
+<span class="cm"># Width, fill, alignment</span>
+<span class="fn">print</span>(<span class="st">"{:>10}"</span>.<span class="fn">format</span>(<span class="st">"right"</span>))    <span class="cm"># right-align in 10 chars</span>
+<span class="fn">print</span>(<span class="st">"{:<10}"</span>.<span class="fn">format</span>(<span class="st">"left"</span>))     <span class="cm"># left-align</span>
+<span class="fn">print</span>(<span class="st">"{:^10}"</span>.<span class="fn">format</span>(<span class="st">"center"</span>))  <span class="cm"># center-align</span>
+<span class="fn">print</span>(<span class="st">"{:*^10}"</span>.<span class="fn">format</span>(<span class="st">"hi"</span>))     <span class="cm"># fill with * and center</span>
+
+<span class="cm"># Number formatting</span>
+<span class="fn">print</span>(<span class="st">"{:,}"</span>.<span class="fn">format</span>(<span class="nm">1000000</span>))   <span class="cm"># thousands separator → 1,000,000</span>
+<span class="fn">print</span>(<span class="st">"{:08.2f}"</span>.<span class="fn">format</span>(<span class="nm">3.14</span>))  <span class="cm"># zero-pad to 8 chars → 00003.14</span>
+<span class="fn">print</span>(<span class="st">"{:b}"</span>.<span class="fn">format</span>(<span class="nm">255</span>))        <span class="cm"># binary → 11111111</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Bob is 30 years old
+Alice loves coding and Alice uses Python
+Carol scored 94.6%
+     right
+left      
+  center  
+****hi****
+1,000,000
+00003.14
+11111111</pre></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 3 — f-strings (Python 3.6+) ⭐ Most Recommended</span>
+      <span class="code-tag">f-strings</span>
+    </div>
+    <div class="code-body"><pre>
+name  <span class="op">=</span> <span class="st">"Diana"</span>
+score <span class="op">=</span> <span class="nm">98.7654</span>
+items <span class="op">=</span> [<span class="st">"pen"</span>, <span class="st">"book"</span>, <span class="st">"ruler"</span>]
+
+<span class="cm"># Basic</span>
+<span class="fn">print</span>(<span class="st">f"Hello, <span class="op">{</span>name<span class="op">}</span>!"</span>)
+
+<span class="cm"># Expressions inside f-strings</span>
+<span class="fn">print</span>(<span class="st">f"2 + 2 = <span class="op">{</span><span class="nm">2</span> <span class="op">+</span> <span class="nm">2</span><span class="op">}</span>"</span>)
+<span class="fn">print</span>(<span class="st">f"Items: <span class="op">{</span><span class="fn">len</span>(items)<span class="op">}</span>"</span>)
+<span class="fn">print</span>(<span class="st">f"First item: <span class="op">{</span>items[<span class="nm">0</span>].<span class="fn">upper</span>()<span class="op">}</span>"</span>)
+
+<span class="cm"># Format specifiers</span>
+<span class="fn">print</span>(<span class="st">f"Score: <span class="op">{</span>score<span class="op">:</span>.2f<span class="op">}</span>"</span>)
+<span class="fn">print</span>(<span class="st">f"Score: <span class="op">{</span>score<span class="op">:</span>10.2f<span class="op">}</span>"</span>)
+<span class="fn">print</span>(<span class="st">f"<span class="op">{</span>name<span class="op">:</span>>15<span class="op">}</span>"</span>)       <span class="cm"># right-aligned</span>
+<span class="fn">print</span>(<span class="st">f"PI ≈ <span class="op">{</span><span class="nm">3.14159</span><span class="op">:</span>.4f<span class="op">}</span>"</span>)
+
+<span class="cm"># Multiline f-strings</span>
+report <span class="op">=</span> (
+    <span class="st">f"Name  : <span class="op">{</span>name<span class="op">}</span>\n"</span>
+    <span class="st">f"Score : <span class="op">{</span>score<span class="op">:</span>.2f<span class="op">}</span>%\n"</span>
+    <span class="st">f"Grade : <span class="op">{</span><span class="st">'A+'</span> <span class="kw">if</span> score <span class="op">&gt;=</span> <span class="nm">90</span> <span class="kw">else</span> <span class="st">'B'</span><span class="op">}</span>"</span>
+)
+<span class="fn">print</span>(report)
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Hello, Diana!
+2 + 2 = 4
+Items: 3
+First item: PEN
+Score: 98.77
+Score:      98.77
+          Diana
+PI ≈ 3.1416
+Name  : Diana
+Score : 98.77%
+Grade : A+</pre></div>
+
+  <div class="tip">💡 <strong>f-strings vs format() vs %</strong>: f-strings (Python 3.6+) are the fastest and most readable. Use them by default. Use <code>str.format()</code> when you need reusable format strings. Use <code>%</code> only when maintaining old code.</div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════
+     5. COMMAND LINE ARGUMENTS
+══════════════════════════════════════════════════ -->
+<section id="cmdargs">
+  <div class="section-header">
+    <div class="sec-num n5">05</div>
+    <div class="sec-info">
+      <h2>Command Line Arguments</h2>
+      <p>Passing inputs to Python scripts from the terminal.</p>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>What are Command Line Arguments?</h3>
+    <p><strong>Command line arguments</strong> (also called CLI arguments) are values passed to a script when it is invoked from the terminal or command prompt, after the script name. They allow the same script to behave differently based on external inputs without modifying the source code.</p>
+    <p>Example: <code>python script.py arg1 arg2 --verbose</code></p>
+    <p>Python provides two main ways to handle CLI arguments:</p>
+    <ul>
+      <li><strong>sys.argv</strong> – Simple list of all arguments as strings.</li>
+      <li><strong>argparse module</strong> – Professional, feature-rich argument parsing with help text, types, defaults, and flags.</li>
+    </ul>
+  </div>
+
+  <div class="theory-block">
+    <h3>sys.argv</h3>
+    <p><code>sys.argv</code> is a list in the <code>sys</code> module that contains the command-line arguments. <code>sys.argv[0]</code> is always the script name itself. Arguments start from <code>sys.argv[1]</code>. All values are <strong>strings</strong> — you must convert types manually.</p>
+  </div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 1 — sys.argv basics</span>
+      <span class="code-tag">sys.argv</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># File: greet.py</span>
+<span class="kw">import</span> sys
+
+<span class="fn">print</span>(<span class="st">f"Script name: <span class="op">{</span>sys.argv[<span class="nm">0</span>]<span class="op">}</span>"</span>)
+<span class="fn">print</span>(<span class="st">f"Total args: <span class="op">{</span><span class="fn">len</span>(sys.argv) <span class="op">-</span> <span class="nm">1</span><span class="op">}</span>"</span>)
+
+<span class="kw">if</span> <span class="fn">len</span>(sys.argv) <span class="op">&lt;</span> <span class="nm">2</span>:
+    <span class="fn">print</span>(<span class="st">"Usage: python greet.py &lt;name&gt; [age]"</span>)
+    sys.<span class="fn">exit</span>(<span class="nm">1</span>)   <span class="cm"># exit with error code</span>
+
+name <span class="op">=</span> sys.argv[<span class="nm">1</span>]
+age  <span class="op">=</span> sys.argv[<span class="nm">2</span>] <span class="kw">if</span> <span class="fn">len</span>(sys.argv) <span class="op">&gt;</span> <span class="nm">2</span> <span class="kw">else</span> <span class="st">"unknown"</span>
+
+<span class="fn">print</span>(<span class="st">f"Hello, <span class="op">{</span>name<span class="op">}</span>! Age: <span class="op">{</span>age<span class="op">}</span>"</span>)
+
+<span class="cm"># Run: python greet.py Alice 22</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Terminal: python greet.py Alice 22</div><pre>Script name: greet.py
+Total args: 2
+Hello, Alice! Age: 22</pre></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 2 — sys.argv with numeric operations</span>
+      <span class="code-tag">sys.argv</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># File: calculator.py</span>
+<span class="kw">import</span> sys
+
+<span class="kw">if</span> <span class="fn">len</span>(sys.argv) <span class="op">!=</span> <span class="nm">4</span>:
+    <span class="fn">print</span>(<span class="st">"Usage: python calculator.py num1 operator num2"</span>)
+    <span class="fn">print</span>(<span class="st">"Example: python calculator.py 10 + 5"</span>)
+    sys.<span class="fn">exit</span>(<span class="nm">1</span>)
+
+<span class="kw">try</span>:
+    a  <span class="op">=</span> <span class="fn">float</span>(sys.argv[<span class="nm">1</span>])
+    op <span class="op">=</span> sys.argv[<span class="nm">2</span>]
+    b  <span class="op">=</span> <span class="fn">float</span>(sys.argv[<span class="nm">3</span>])
+<span class="kw">except</span> <span class="bl">ValueError</span>:
+    <span class="fn">print</span>(<span class="st">"Error: Arguments must be numbers."</span>)
+    sys.<span class="fn">exit</span>(<span class="nm">1</span>)
+
+ops <span class="op">=</span> {<span class="st">'+'</span>: a<span class="op">+</span>b, <span class="st">'-'</span>: a<span class="op">-</span>b, <span class="st">'*'</span>: a<span class="op">*</span>b, <span class="st">'/'</span>: a<span class="op">/</span>b <span class="kw">if</span> b <span class="op">!=</span> <span class="nm">0</span> <span class="kw">else</span> <span class="st">"undefined"</span>}
+
+<span class="kw">if</span> op <span class="kw">not in</span> ops:
+    <span class="fn">print</span>(<span class="st">f"Unknown operator: <span class="op">{</span>op<span class="op">}</span>. Use +, -, *, /"</span>)
+    sys.<span class="fn">exit</span>(<span class="nm">1</span>)
+
+<span class="fn">print</span>(<span class="st">f"<span class="op">{</span>a<span class="op">}</span> <span class="op">{</span>op<span class="op">}</span> <span class="op">{</span>b<span class="op">}</span> = <span class="op">{</span>ops[op]<span class="op">}</span>"</span>)
+<span class="cm"># Run: python calculator.py 15 * 4</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Terminal: python calculator.py 15 * 4</div><pre>15.0 * 4.0 = 60.0</pre></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 3 — argparse module (Professional CLI)</span>
+      <span class="code-tag">argparse</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># File: student.py</span>
+<span class="kw">import</span> argparse
+
+parser <span class="op">=</span> argparse.<span class="fn">ArgumentParser</span>(
+    description<span class="op">=</span><span class="st">"Student grade calculator"</span>
+)
+
+<span class="cm"># Positional argument (required)</span>
+parser.<span class="fn">add_argument</span>(<span class="st">"name"</span>, <span class="fn">type</span><span class="op">=</span>str, help<span class="op">=</span><span class="st">"Student name"</span>)
+
+<span class="cm"># Optional argument with default</span>
+parser.<span class="fn">add_argument</span>(<span class="st">"--score"</span>, <span class="fn">type</span><span class="op">=</span>float, default<span class="op">=</span><span class="nm">0.0</span>,
+                    help<span class="op">=</span><span class="st">"Score (0-100)"</span>)
+
+<span class="cm"># Flag (boolean)</span>
+parser.<span class="fn">add_argument</span>(<span class="st">"--verbose"</span>, action<span class="op">=</span><span class="st">"store_true"</span>,
+                    help<span class="op">=</span><span class="st">"Print detailed output"</span>)
+
+args <span class="op">=</span> parser.<span class="fn">parse_args</span>()
+
+grade <span class="op">=</span> (<span class="st">"A"</span> <span class="kw">if</span> args.score <span class="op">&gt;=</span> <span class="nm">90</span> <span class="kw">else</span>
+          <span class="st">"B"</span> <span class="kw">if</span> args.score <span class="op">&gt;=</span> <span class="nm">75</span> <span class="kw">else</span>
+          <span class="st">"C"</span> <span class="kw">if</span> args.score <span class="op">&gt;=</span> <span class="nm">60</span> <span class="kw">else</span> <span class="st">"F"</span>)
+
+<span class="fn">print</span>(<span class="st">f"<span class="op">{</span>args.name<span class="op">}</span>: Grade <span class="op">{</span>grade<span class="op">}</span>"</span>)
+<span class="kw">if</span> args.verbose:
+    <span class="fn">print</span>(<span class="st">f"  Score : <span class="op">{</span>args.score<span class="op">}</span>"</span>)
+    <span class="fn">print</span>(<span class="st">f"  Grade : <span class="op">{</span>grade<span class="op">}</span>"</span>)
+    <span class="fn">print</span>(<span class="st">f"  Pass  : <span class="op">{</span>grade <span class="op">!=</span> <span class="st">'F'</span><span class="op">}</span>"</span>)
+
+<span class="cm"># Run: python student.py Alice --score 87.5 --verbose</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Terminal: python student.py Alice --score 87.5 --verbose</div><pre>Alice: Grade B
+  Score : 87.5
+  Grade : B
+  Pass  : True</pre></div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════
+     6. MODULES
+══════════════════════════════════════════════════ -->
+<section id="modules">
+  <div class="section-header">
+    <div class="sec-num n6">06</div>
+    <div class="sec-info">
+      <h2>Modules</h2>
+      <p>Organizing code into reusable, importable files.</p>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>What is a Module?</h3>
+    <p>A <strong>module</strong> is simply a Python file (ending in <code>.py</code>) that contains definitions of functions, classes, and variables. Modules allow you to <strong>organize, reuse, and share</strong> code across multiple programs. Any Python file can be imported as a module.</p>
+    <p>Python has three types of modules:</p>
+    <ul>
+      <li><strong>Built-in modules</strong> – Pre-installed with Python (e.g., <code>math</code>, <code>os</code>, <code>sys</code>, <code>random</code>, <code>datetime</code>).</li>
+      <li><strong>Third-party modules</strong> – Installed via pip (e.g., <code>numpy</code>, <code>pandas</code>, <code>requests</code>).</li>
+      <li><strong>User-defined modules</strong> – Your own <code>.py</code> files.</li>
+    </ul>
+  </div>
+
+  <div class="theory-block">
+    <h3>Import Styles</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Syntax</th><th>Effect</th><th>Usage</th></tr>
+        <tr><td><code>import math</code></td><td>Import entire module</td><td><code>math.sqrt(4)</code></td></tr>
+        <tr><td><code>import math as m</code></td><td>Alias for module</td><td><code>m.sqrt(4)</code></td></tr>
+        <tr><td><code>from math import sqrt</code></td><td>Import specific name</td><td><code>sqrt(4)</code></td></tr>
+        <tr><td><code>from math import sqrt, pi</code></td><td>Import multiple names</td><td><code>sqrt(pi)</code></td></tr>
+        <tr><td><code>from math import *</code></td><td>Import all (⚠️ not recommended)</td><td><code>sqrt(4)</code></td></tr>
+        <tr><td><code>from math import sqrt as sq</code></td><td>Alias for specific name</td><td><code>sq(4)</code></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 1 — Creating your own module</span>
+      <span class="code-tag">user module</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># ─── File: mymath.py ──────────────────────────</span>
+PI <span class="op">=</span> <span class="nm">3.14159265358979</span>
+
+<span class="kw">def</span> <span class="fn">area_circle</span>(r):
+    <span class="st">"""Return area of circle with radius r."""</span>
+    <span class="kw">return</span> PI <span class="op">*</span> r <span class="op">**</span> <span class="nm">2</span>
+
+<span class="kw">def</span> <span class="fn">area_rectangle</span>(l, w):
+    <span class="st">"""Return area of rectangle."""</span>
+    <span class="kw">return</span> l <span class="op">*</span> w
+
+<span class="kw">def</span> <span class="fn">factorial</span>(n):
+    <span class="st">"""Return n! recursively."""</span>
+    <span class="kw">if</span> n <span class="op">==</span> <span class="nm">0</span>: <span class="kw">return</span> <span class="nm">1</span>
+    <span class="kw">return</span> n <span class="op">*</span> <span class="fn">factorial</span>(n <span class="op">-</span> <span class="nm">1</span>)
+
+<span class="kw">class</span> <span class="fn">Vector</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, x, y):
+        <span class="kw">self</span>.x, <span class="kw">self</span>.y <span class="op">=</span> x, y
+    <span class="kw">def</span> <span class="fn">magnitude</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> ((<span class="kw">self</span>.x<span class="op">**</span><span class="nm">2</span>) <span class="op">+</span> (<span class="kw">self</span>.y<span class="op">**</span><span class="nm">2</span>))<span class="op">**</span><span class="nm">0.5</span>
+
+<span class="cm"># ─── File: main.py ────────────────────────────</span>
+<span class="kw">import</span> mymath                   <span class="cm"># import entire module</span>
+<span class="kw">from</span> mymath <span class="kw">import</span> factorial    <span class="cm"># import specific function</span>
+
+<span class="fn">print</span>(mymath.<span class="fn">area_circle</span>(<span class="nm">7</span>))    <span class="cm"># → 153.93...</span>
+<span class="fn">print</span>(mymath.<span class="fn">area_rectangle</span>(<span class="nm">4</span>, <span class="nm">6</span>))  <span class="cm"># → 24</span>
+<span class="fn">print</span>(<span class="fn">factorial</span>(<span class="nm">5</span>))             <span class="cm"># → 120</span>
+v <span class="op">=</span> mymath.<span class="fn">Vector</span>(<span class="nm">3</span>, <span class="nm">4</span>)
+<span class="fn">print</span>(v.<span class="fn">magnitude</span>())             <span class="cm"># → 5.0</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>153.93803921...
+24
+120
+5.0</pre></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 2 — Built-in modules: math, random, datetime, os</span>
+      <span class="code-tag">built-in</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">import</span> math
+<span class="kw">import</span> random
+<span class="kw">import</span> datetime
+<span class="kw">import</span> os
+
+<span class="cm"># ── math ──</span>
+<span class="fn">print</span>(math.<span class="fn">sqrt</span>(<span class="nm">144</span>))        <span class="cm"># → 12.0</span>
+<span class="fn">print</span>(math.<span class="fn">pow</span>(<span class="nm">2</span>, <span class="nm">10</span>))       <span class="cm"># → 1024.0</span>
+<span class="fn">print</span>(math.<span class="fn">gcd</span>(<span class="nm">48</span>, <span class="nm">18</span>))      <span class="cm"># → 6</span>
+<span class="fn">print</span>(math.<span class="fn">ceil</span>(<span class="nm">4.2</span>))        <span class="cm"># → 5</span>
+<span class="fn">print</span>(math.<span class="fn">floor</span>(<span class="nm">4.9</span>))       <span class="cm"># → 4</span>
+<span class="fn">print</span>(math.pi, math.e)        <span class="cm"># → 3.14159... 2.71828...</span>
+
+<span class="cm"># ── random ──</span>
+<span class="fn">print</span>(random.<span class="fn">randint</span>(<span class="nm">1</span>, <span class="nm">100</span>)) <span class="cm"># random int between 1 and 100</span>
+<span class="fn">print</span>(random.<span class="fn">random</span>())        <span class="cm"># float between 0.0 and 1.0</span>
+names <span class="op">=</span> [<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Carol"</span>]
+<span class="fn">print</span>(random.<span class="fn">choice</span>(names))   <span class="cm"># random element</span>
+random.<span class="fn">shuffle</span>(names)
+<span class="fn">print</span>(names)                   <span class="cm"># shuffled in-place</span>
+
+<span class="cm"># ── datetime ──</span>
+now <span class="op">=</span> datetime.datetime.<span class="fn">now</span>()
+<span class="fn">print</span>(now.<span class="fn">strftime</span>(<span class="st">"%Y-%m-%d %H:%M:%S"</span>))  <span class="cm"># → 2025-01-15 14:30:00</span>
+birthday <span class="op">=</span> datetime.date(<span class="nm">2000</span>, <span class="nm">6</span>, <span class="nm">15</span>)
+<span class="fn">print</span>(<span class="st">f"Birthday: <span class="op">{</span>birthday<span class="op">}</span>"</span>)
+
+<span class="cm"># ── os ──</span>
+<span class="fn">print</span>(os.<span class="fn">getcwd</span>())              <span class="cm"># current working directory</span>
+<span class="fn">print</span>(os.path.<span class="fn">exists</span>(<span class="st">"notes.txt"</span>))  <span class="cm"># True/False</span>
+<span class="fn">print</span>(os.path.<span class="fn">join</span>(<span class="st">"folder"</span>, <span class="st">"file.txt"</span>))  <span class="cm"># → folder/file.txt</span>
+</pre></div></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 3 — __name__ == "__main__" guard</span>
+      <span class="code-tag">__main__</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># File: utilities.py</span>
+<span class="cm"># This block only runs when the file is executed directly,</span>
+<span class="cm"># NOT when it is imported as a module in another file.</span>
+
+<span class="kw">def</span> <span class="fn">greet</span>(name):
+    <span class="kw">return</span> <span class="st">f"Hello, <span class="op">{</span>name<span class="op">}</span>!"</span>
+
+<span class="kw">def</span> <span class="fn">square</span>(n):
+    <span class="kw">return</span> n <span class="op">**</span> <span class="nm">2</span>
+
+<span class="kw">if</span> __name__ <span class="op">==</span> <span class="st">"__main__"</span>:
+    <span class="cm"># This runs ONLY when running: python utilities.py</span>
+    <span class="fn">print</span>(<span class="fn">greet</span>(<span class="st">"World"</span>))
+    <span class="fn">print</span>(<span class="st">f"5 squared = <span class="op">{</span><span class="fn">square</span>(<span class="nm">5</span>)<span class="op">}</span>"</span>)
+    <span class="fn">print</span>(<span class="st">"Running as main script."</span>)
+
+<span class="cm"># When imported: `import utilities`</span>
+<span class="cm"># Only functions are available, the if block does NOT run.</span>
+</pre></div></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 4 — dir() and help() — Exploring modules</span>
+      <span class="code-tag">introspection</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="kw">import</span> math
+
+<span class="cm"># List all names in math module</span>
+<span class="fn">print</span>(<span class="fn">dir</span>(math))
+<span class="cm"># → ['__doc__', '__loader__', ..., 'ceil', 'cos', 'e', 'exp', 'factorial', ...]</span>
+
+<span class="cm"># Get documentation for a function</span>
+<span class="fn">help</span>(math.sqrt)
+<span class="cm"># → Help on built-in function sqrt in module math:
+#   sqrt(x, /)
+#       Return the square root of x.</span>
+
+<span class="cm"># __doc__ attribute</span>
+<span class="fn">print</span>(math.__doc__[:80])   <span class="cm"># first 80 chars of module docstring</span>
+
+<span class="cm"># Check module file location</span>
+<span class="fn">print</span>(math.__file__)       <span class="cm"># path to compiled module (if applicable)</span>
+</pre></div></div>
+
+  <div class="note">📌 <strong>Module Search Path:</strong> When you import a module, Python searches in order: (1) current directory, (2) directories in PYTHONPATH, (3) installation-dependent default locations. You can view and modify this with <code>sys.path</code>.</div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════
+     7. PACKAGES
+══════════════════════════════════════════════════ -->
+<section id="packages">
+  <div class="section-header">
+    <div class="sec-num n7">07</div>
+    <div class="sec-info">
+      <h2>Packages</h2>
+      <p>Organizing multiple modules into structured directory hierarchies.</p>
+    </div>
+  </div>
+
+  <div class="theory-block">
+    <h3>What is a Package?</h3>
+    <p>A <strong>package</strong> is a directory that contains multiple Python modules (files) and a special file called <code>__init__.py</code>. The <code>__init__.py</code> tells Python that the directory should be treated as a package, not just a folder. Packages allow you to organize large codebases into <strong>logical namespaces</strong>.</p>
+    <ul>
+      <li>A <strong>package</strong> is a directory containing <code>__init__.py</code>.</li>
+      <li>A <strong>sub-package</strong> is a package inside another package.</li>
+      <li>The <code>__init__.py</code> can be empty or contain initialization code.</li>
+      <li>Python 3.3+ also supports <strong>namespace packages</strong> (without <code>__init__.py</code>), but using <code>__init__.py</code> is still best practice.</li>
+    </ul>
+  </div>
+
+  <div class="theory-block">
+    <h3>Package Structure Example</h3>
+    <pre style="background:var(--code-bg);padding:16px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#cdd3e0;line-height:1.8">myapp/
+├── __init__.py          ← makes myapp a package
+├── main.py
+├── utils/
+│   ├── __init__.py      ← makes utils a sub-package
+│   ├── string_utils.py
+│   └── math_utils.py
+├── database/
+│   ├── __init__.py
+│   ├── models.py
+│   └── queries.py
+└── tests/
+    ├── __init__.py
+    └── test_utils.py</pre>
+  </div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 1 — Creating a package (school package)</span>
+      <span class="code-tag">create package</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># ─── school/__init__.py ───────────────────────</span>
+<span class="st">"""School management package."""</span>
+from .student <span class="kw">import</span> Student
+from .teacher <span class="kw">import</span> Teacher
+VERSION <span class="op">=</span> <span class="st">"1.0.0"</span>
+
+<span class="cm"># ─── school/student.py ────────────────────────</span>
+<span class="kw">class</span> <span class="fn">Student</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, grade):
+        <span class="kw">self</span>.name  <span class="op">=</span> name
+        <span class="kw">self</span>.grade <span class="op">=</span> grade
+    <span class="kw">def</span> <span class="fn">__repr__</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="st">f"Student(<span class="op">{</span><span class="kw">self</span>.name<span class="op">}</span>, <span class="op">{</span><span class="kw">self</span>.grade<span class="op">}</span>)"</span>
+
+<span class="cm"># ─── school/teacher.py ────────────────────────</span>
+<span class="kw">class</span> <span class="fn">Teacher</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, name, subject):
+        <span class="kw">self</span>.name    <span class="op">=</span> name
+        <span class="kw">self</span>.subject <span class="op">=</span> subject
+    <span class="kw">def</span> <span class="fn">introduce</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="st">f"I'm <span class="op">{</span><span class="kw">self</span>.name<span class="op">}</span>, I teach <span class="op">{</span><span class="kw">self</span>.subject<span class="op">}</span>."</span>
+
+<span class="cm"># ─── main.py ──────────────────────────────────</span>
+<span class="kw">import</span> school                   <span class="cm"># import the package</span>
+<span class="kw">from</span> school <span class="kw">import</span> Student, Teacher
+
+s <span class="op">=</span> <span class="fn">Student</span>(<span class="st">"Alice"</span>, <span class="st">"10th"</span>)
+t <span class="op">=</span> <span class="fn">Teacher</span>(<span class="st">"Mr. Roy"</span>, <span class="st">"Python"</span>)
+<span class="fn">print</span>(s)                        <span class="cm"># → Student(Alice, 10th)</span>
+<span class="fn">print</span>(t.<span class="fn">introduce</span>())            <span class="cm"># → I'm Mr. Roy, I teach Python.</span>
+<span class="fn">print</span>(<span class="st">f"Version: <span class="op">{</span>school.VERSION<span class="op">}</span>"</span>)
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>Student(Alice, 10th)
+I'm Mr. Roy, I teach Python.
+Version: 1.0.0</pre></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 2 — Nested sub-packages and imports</span>
+      <span class="code-tag">sub-package</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># ─── Package structure ─────────────────────────
+# myapp/
+# ├── __init__.py
+# └── utils/
+#     ├── __init__.py
+#     ├── strings.py
+#     └── numbers.py</span>
+
+<span class="cm"># ─── myapp/utils/strings.py ───────────────────</span>
+<span class="kw">def</span> <span class="fn">capitalize_all</span>(words):
+    <span class="kw">return</span> [w.<span class="fn">capitalize</span>() <span class="kw">for</span> w <span class="kw">in</span> words]
+
+<span class="kw">def</span> <span class="fn">reverse_string</span>(s):
+    <span class="kw">return</span> s[::<span class="op">-</span><span class="nm">1</span>]
+
+<span class="cm"># ─── myapp/utils/numbers.py ───────────────────</span>
+<span class="kw">def</span> <span class="fn">is_prime</span>(n):
+    <span class="kw">if</span> n <span class="op">&lt;</span> <span class="nm">2</span>: <span class="kw">return</span> <span class="nm">False</span>
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>, <span class="fn">int</span>(n<span class="op">**</span><span class="nm">0.5</span>)<span class="op">+</span><span class="nm">1</span>):
+        <span class="kw">if</span> n <span class="op">%</span> i <span class="op">==</span> <span class="nm">0</span>: <span class="kw">return</span> <span class="nm">False</span>
+    <span class="kw">return</span> <span class="nm">True</span>
+
+<span class="cm"># ─── Using the sub-package ────────────────────</span>
+<span class="kw">from</span> myapp.utils <span class="kw">import</span> strings, numbers
+<span class="kw">from</span> myapp.utils.strings <span class="kw">import</span> reverse_string
+
+<span class="fn">print</span>(strings.<span class="fn">capitalize_all</span>([<span class="st">"hello"</span>, <span class="st">"world"</span>]))  <span class="cm"># → ['Hello', 'World']</span>
+<span class="fn">print</span>(<span class="fn">reverse_string</span>(<span class="st">"Python"</span>))                      <span class="cm"># → nohtyP</span>
+<span class="fn">print</span>([n <span class="kw">for</span> n <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>, <span class="nm">20</span>) <span class="kw">if</span> numbers.<span class="fn">is_prime</span>(n)])
+<span class="cm"># → [2, 3, 5, 7, 11, 13, 17, 19]</span>
+</pre></div></div>
+  <div class="output-block"><div class="out-label">Output</div><pre>['Hello', 'World']
+nohtyP
+[2, 3, 5, 7, 11, 13, 17, 19]</pre></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 3 — pip: Installing third-party packages</span>
+      <span class="code-tag">pip</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># --- Terminal commands ---</span>
+<span class="cm"># Install a package</span>
+<span class="cm"># pip install requests</span>
+
+<span class="cm"># Install specific version</span>
+<span class="cm"># pip install numpy==1.24.0</span>
+
+<span class="cm"># List installed packages</span>
+<span class="cm"># pip list</span>
+
+<span class="cm"># Uninstall</span>
+<span class="cm"># pip uninstall requests</span>
+
+<span class="cm"># Save dependencies to file</span>
+<span class="cm"># pip freeze > requirements.txt</span>
+
+<span class="cm"># Install from requirements file</span>
+<span class="cm"># pip install -r requirements.txt</span>
+
+<span class="cm"># --- Using requests (after pip install requests) ---</span>
+<span class="kw">import</span> requests
+
+response <span class="op">=</span> requests.<span class="fn">get</span>(<span class="st">"https://api.github.com"</span>)
+<span class="fn">print</span>(<span class="st">f"Status: <span class="op">{</span>response.status_code<span class="op">}</span>"</span>)  <span class="cm"># → 200</span>
+data <span class="op">=</span> response.<span class="fn">json</span>()
+<span class="fn">print</span>(<span class="fn">list</span>(data.<span class="fn">keys</span>())[:<span class="nm">3</span>])              <span class="cm"># first 3 keys</span>
+</pre></div></div>
+
+  <div class="code-card">
+    <div class="code-header">
+      <span class="code-label">Example 4 — __init__.py controlling public API with __all__</span>
+      <span class="code-tag">__all__</span>
+    </div>
+    <div class="code-body"><pre>
+<span class="cm"># ─── shapes/__init__.py ───────────────────────</span>
+<span class="cm"># __all__ controls what is exported with 'from shapes import *'</span>
+__all__ <span class="op">=</span> [<span class="st">"Circle"</span>, <span class="st">"Rectangle"</span>]   <span class="cm"># Triangle is hidden from *</span>
+
+<span class="kw">from</span> .circle    <span class="kw">import</span> Circle
+<span class="kw">from</span> .rectangle <span class="kw">import</span> Rectangle
+<span class="kw">from</span> .triangle  <span class="kw">import</span> Triangle      <span class="cm"># available but not in __all__</span>
+
+<span class="cm"># ─── usage ────────────────────────────────────</span>
+<span class="kw">from</span> shapes <span class="kw">import</span> <span class="op">*</span>   <span class="cm"># imports Circle and Rectangle only</span>
+<span class="kw">from</span> shapes <span class="kw">import</span> Triangle   <span class="cm"># explicit import still works</span>
+
+c <span class="op">=</span> <span class="fn">Circle</span>(<span class="nm">5</span>)
+r <span class="op">=</span> <span class="fn">Rectangle</span>(<span class="nm">4</span>, <span class="nm">6</span>)
+t <span class="op">=</span> <span class="fn">Triangle</span>(<span class="nm">3</span>, <span class="nm">4</span>, <span class="nm">5</span>)
+
+<span class="fn">print</span>(c.<span class="fn">area</span>())    <span class="cm"># → 78.539...</span>
+<span class="fn">print</span>(r.<span class="fn">area</span>())    <span class="cm"># → 24</span>
+<span class="fn">print</span>(t.<span class="fn">perimeter</span>())  <span class="cm"># → 12</span>
+</pre></div></div>
+
+  <div class="theory-block">
+    <h3>Absolute vs Relative Imports</h3>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Type</th><th>Syntax</th><th>When to Use</th></tr>
+        <tr><td>Absolute</td><td><code>from myapp.utils import helper</code></td><td>From the top-level package. Most reliable.</td></tr>
+        <tr><td>Relative</td><td><code>from .utils import helper</code></td><td>Within the same package. Single dot = current package.</td></tr>
+        <tr><td>Relative parent</td><td><code>from ..models import User</code></td><td>Double dot = parent package.</td></tr>
+      </table>
+    </div>
+    <p><strong>Best practice:</strong> Use <strong>absolute imports</strong> whenever possible. Use relative imports only inside packages to avoid circular import issues.</p>
+  </div>
+
+  <div class="tip">💡 <strong>Virtual Environments:</strong> Always create a virtual environment (<code>python -m venv venv</code>) before installing packages for a project. This keeps dependencies isolated and avoids conflicts between projects.</div>
+</section>
+
+</div><!-- .page-wrap -->
+
+<!-- ╔══════════════════════════════════╗ -->
+<!--    FOOTER                          -->
+<!-- ╚══════════════════════════════════╝ -->
+<footer>
+  <div style="margin-bottom:10px">
+    <a href="https://scholarnest21.netlify.app" target="_blank">
+      <span style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:inherit">
+        <span style="background:linear-gradient(135deg,#6C63FF,#00D4AA);width:28px;height:28px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:12px;color:#fff">SN</span>
+        <span style="font-family:'Sora',sans-serif;font-size:1rem;font-weight:700;color:#E8EAF0">Scholar<span style="color:#00D4AA">Nest</span></span>
+      </span>
+    </a>
+  </div>
+  <p>Python Study Notes · Files, Modules &amp; Packages</p>
+  <p style="margin-top:6px">
+    Visit: <a href="https://scholarnest21.netlify.app" target="_blank">scholarnest21.netlify.app</a>
+    &nbsp;·&nbsp; Learn. Grow. Excel.
+  </p>
+</footer>
+
+<script>
+  // Highlight active pill on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const pills = document.querySelectorAll('.toc-pill');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        pills.forEach(p => p.classList.remove('active'));
+        const active = document.querySelector(`.toc-pill[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
